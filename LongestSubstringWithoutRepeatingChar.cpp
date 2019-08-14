@@ -1,38 +1,45 @@
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <iostream>
 using namespace std;
 
 class Solution {
-public:
-    int lengthOfLongestSubstring(string s)
-    {
-       int longestSubstrLength = 0;
-       int curSubstrLength = 0;
-       std::map<char, bool> usedChars;
+   public:
+      int lengthOfLongestSubstring(string s)
+      {
+         // Keep a map of char -> index found at
+         std::unordered_map<char, short> chars;
+         chars.reserve(s.size());
+         short longestSubstrLength = 0;
+         short beginIdx = 0;
 
-       for (int i = 0; i < s.size(); i++)
-       {
-          char c = s[i];
-          if (usedChars.find(c) != usedChars.end())
-          {
-            curSubstrLength = 1;
-            usedChars.clear();
-            usedChars.emplace(c, 1);
-          }
-          else
-          {
-            curSubstrLength++;
+         for (size_t i = 0; i < s.size(); i++)
+         {
+            char c = s[i];
+            auto ci = chars.find(c);
+
+            if (ci == chars.end())
+            {
+               chars.emplace(c, i);
+            }
+            else
+            {
+               if (ci->second + 1 > beginIdx)
+               {
+                  beginIdx = ci->second + 1;
+               }
+
+               ci->second = i;
+            }
+
+            short curSubstrLength = i + 1 - beginIdx;
             if (curSubstrLength > longestSubstrLength)
             {
-              longestSubstrLength = curSubstrLength;
+               longestSubstrLength = curSubstrLength;
             }
-            usedChars.emplace(c, 1);
-          }
-       }
-
-       return longestSubstrLength;
-    }
+         }
+         return longestSubstrLength;
+      }
 };
 
 int main()
@@ -43,5 +50,6 @@ int main()
    std::cout << s.lengthOfLongestSubstring(std::string("bbbbb")) << std::endl;
    std::cout << s.lengthOfLongestSubstring(std::string("pwwkew")) << std::endl;
    std::cout << s.lengthOfLongestSubstring(std::string("dvdf")) << std::endl;
-
+   std::cout << s.lengthOfLongestSubstring(std::string("anviaj")) << std::endl;
+   std::cout << s.lengthOfLongestSubstring(std::string("bedvdfabcdxb")) << std::endl;
 }
